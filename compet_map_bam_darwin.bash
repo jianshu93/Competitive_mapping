@@ -83,7 +83,7 @@ dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
-    $(../dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.renamed.fasta)
+    $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.renamed.fasta)
     $(ggrep -E '^>' ${output}/${SAMPLE}.renamed.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}.rename.txt)
     $(cat ${output}/${SAMPLE}.renamed.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
@@ -102,23 +102,23 @@ if [[ "$mapping" == "bowtie2" ]]; then
     fi
 elif [[ "$mapping" == "bwa" ]]; then
     echo "Indexing reference genomes using bwa index"
-    $(../dependencies/bwa_darwin index ${output}/all_mags_rename.fasta)
+    $(./dependencies/bwa_darwin index ${output}/all_mags_rename.fasta)
     echo "Indexing done"
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(../dependencies/bwa_darwin mem -t $threads ${output}/all_mags_rename $reads1 $reads2 > ${output}/all_mags_rename.sam)
+        $(./dependencies/bwa_darwin mem -t $threads ${output}/all_mags_rename $reads1 $reads2 > ${output}/all_mags_rename.sam)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(../dependencies/bwa_darwin mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+        $(./dependencies/bwa_darwin mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
 else
     echo "not supported mapping method"
 fi
 echo "reads mapping done"
 
-$(../dependencies/samtools_darwin view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
+$(./dependencies/samtools_darwin view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.sam)
-$(../dependencies/samtools_darwin sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
+$(./dependencies/samtools_darwin sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.bam)
 
 echo "extracting bam files for each genome"
@@ -126,8 +126,8 @@ dfiles_rename="${output}/*.rename.txt"
 for F in $dfiles_rename; do
     BASE=${F##*/}
 	SAMPLE=${BASE%.*}
-    $(../dependencies/samtools_darwin index ${output}/all_mags_rename_sorted.bam)
-    $(../dependencies/samtools_darwin view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+    $(./dependencies/samtools_darwin index ${output}/all_mags_rename_sorted.bam)
+    $(./dependencies/samtools_darwin view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
     $(rm $F)
 done
 echo "All done"
