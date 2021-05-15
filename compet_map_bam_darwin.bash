@@ -6,10 +6,10 @@
 
 threads=$(nproc)
 dir_mag=./MAG
-reads1=./reads_R1.fastq.gz
-reads2=./reads_R2.fastq.gz
+reads1=./reads_R1.fastq
+reads2=./reads_R2.fastq
 output=./output
-intleav=./interleave.fastq.gz
+intleav=./interleave.fastq
 mapping="bwa"
 
 while getopts ":d:o:(r1):(r2):i:m:T:h" option
@@ -38,6 +38,8 @@ do
                 -i interleaved reads to map to the MAG collection
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
+                -m mapping method, default bwa, bowtie2 is also supported but there
+                    are known bug for it if using --threads value larger than 1
                 "
             exit 1
             ;;
@@ -53,16 +55,25 @@ fi
 
 if test -f "$intleav"; then
     echo "$intleav exists."
+    if (file $intleav | grep -q "gzip compressed") ; then
+        $(gunzip $intleav)
+    fi
 else
 	echo "$intleav does not exists."
     if test -f "$reads1"; then
         echo "$reads1 exists."
+        if (file $reads1 | grep -q "gzip compressed") ; then
+            $(gunzip $reads1)
+        fi
     else
 	    echo "$reads1 does not exists."
 	    exit 1
     fi
     if test -f "$reads2"; then
         echo "$reads2 exists."
+        if (file $reads2 | grep -q "gzip compressed") ; then
+            $(gunzip $reads2)
+        fi
     else
 	    echo "$reads2 does not exists."
 	    exit 1
@@ -83,9 +94,9 @@ dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
-    $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.renamed.fasta)
-    $(ggrep -E '^>' ${output}/${SAMPLE}.renamed.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}.rename.txt)
-    $(cat ${output}/${SAMPLE}.renamed.fasta >> ${output}/all_mags_rename.fasta)
+    $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.fasta)
+    $(ggrep -E '^>' ${output}/${SAMPLE}.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}.rename.txt)
+    $(cat ${output}/${SAMPLE}.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
 done
 

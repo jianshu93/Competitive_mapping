@@ -4,6 +4,8 @@
 ### dependencies:
 ### seqtk, samtools and bowtie2/bwa，all can be installed via conda
 
+
+## default settings
 threads=$(nproc)
 dir_mag=./MAG
 reads1=./reads_R1.fastq.gz
@@ -29,15 +31,19 @@ do
 		    exit 1
 			;;
 		h) 
-           echo "usage: compet_map_bam.bash -d ./MAGs -r1 ./reads_R1.fastq.gz -r2 ./reads_R2.fastq.gz -T 12 -o ./bam_out
+           echo "usage: compet_map_bam.bash -d ./MAGs -r1 ./reads_R1.fastq -r2 ./reads_R2.fastq -T 12 -o ./bam_out
+                or 
+                usage: compet_map_bam.bash -d ./MAGs -i interleaved.fastq -T 12 -o ./bam_out
            
                 options:
-                -d directory contains MAG, can be fasta or fa or fna in the name
-                -r1 forward reads to map to the the MAG collection
-                -r2 reverse reads to map to the the MAG collection
-                -i interleaved reads to map to the MAG collection
+                -d directory contains MAG in fasta format, must ends with .fasta in the name
+                -r1 forward reads to map to the the MAG collection, can be gzipped format
+                -r2 reverse reads to map to the the MAG collection, can be gzipped format
+                -i interleaved reads to map to the MAG collection, can be gzipped format
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
+                -m mapping method, default bwa, bowtie2 is also supported but there
+                    are known bug for it if using --threads value larger than 1
                 "
             exit 1
             ;;
@@ -53,16 +59,25 @@ fi
 
 if test -f "$intleav"; then
     echo "$intleav exists."
+    if (file $intleav | grep -q "gzip compressed") ; then
+        $(gunzip $intleav)
+    fi
 else
 	echo "$intleav does not exists."
     if test -f "$reads1"; then
         echo "$reads1 exists."
+        if (file $reads1 | grep -q "gzip compressed") ; then
+            $(gunzip $reads1)
+        fi
     else
 	    echo "$reads1 does not exists."
 	    exit 1
     fi
     if test -f "$reads2"; then
         echo "$reads2 exists."
+        if (file $reads2 | grep -q "gzip compressed") ; then
+            $(gunzip $reads2)
+        fi
     else
 	    echo "$reads2 does not exists."
 	    exit 1
@@ -84,7 +99,7 @@ for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
     $(./dependencies/seqtk_linux rename $F ${SAMPLE}. > ${output}/${SAMPLE}.renamed.fasta)
-    $(grep -E '^>' ${output}/${SAMPLE}.renamed.fasta | sed 's/>//' | awk '{print $1}' | tr '\n' ' ' > ${output}/${SAMPLE}.rename.txt)
+    $(grep -E '^>' ${output}/${SAMPLE}.renamed.fasta | sed 's/>//' | awk '{print $1}' | tr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
     $(cat ${output}/${SAMPLE}.renamed.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
 done
@@ -100,6 +115,7 @@ if [[ "$mapping" == "bowtie2" ]]; then
         echo "Doing reads mapping using interleaved reads"
         $(bowtie2 -x ${output}/all_mags_rename -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
+    $(rm ${output}/all_mags_rename.fasta)
 elif [[ "$mapping" == "bwa" ]]; then
     echo "Indexing reference genomes using bwa index"
     $(./dependencies/bwa_linux index ${output}/all_mags_rename.fasta)
@@ -111,6 +127,7 @@ elif [[ "$mapping" == "bwa" ]]; then
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa_linux mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
+    $(rm ${output}/all_mags_rename.fasta)
 else
     echo "not supported mapping method"
 fi
@@ -122,12 +139,14 @@ $(./dependencies/samtools_linux sort -@ $threads -O bam -o ${output}/all_mags_re
 $(rm ${output}/all_mags_rename.bam)
 
 echo "extracting bam files for each genome"
-dfiles_rename="${output}/*.rename.txt"
-for F in $dfiles_rename; do
-    BASE=${F##*/}
-	SAMPLE=${BASE%.*}
-    $(./dependencies/samtools_linux index ${output}/all_mags_rename_sorted.bam)
-    $(./dependencies/samtools_linux view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
-    $(rm $F)
-done
+dfiles_rename="${output}/*_rename.txt"
+$(./dependencies/samtools_linux index ${output}/all_mags_rename_sorted.bam)
+#for F in $dfiles_rename; do
+    #BASE=${F##*/}
+	#SAMPLE=${BASE%.*}
+    #$(./dependencies/samtools_linux view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+    #$(rm $F)
+#done
+$(ls $dfiles_rename | parallel -j $threads "./dependencies/samtools_linux view -bS ${output}/all_mags_rename_sorted.bam $(cat {}) > ${output}/{_}.sorted.bam")
+
 echo "All done"
