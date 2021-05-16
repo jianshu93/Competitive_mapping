@@ -9,7 +9,7 @@
 ### due to closely related MAGs (population genomes)
 ### We called it justified TAD80, jTAD80. This is consistent with the CoverM trimmed_mean metric (TMD80)
 ### (coverm option:-m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75 --min-covered-fraction 0)
-### dependencies: gnu parallel, samtools, filterBam, bedtools, ruby
+### dependencies: gnu parallel, samtools, filterBam
 
 processors=$(nproc)
 map_out=./bam_out
@@ -50,28 +50,15 @@ done
 
 dfiles="${map_out}/*.fasta"
 
-if ! command -v samtools &> /dev/null
-then
-    $(ls $dfiles | parallel -j $processors "./dependencies/samtools_linux sort -n -O bam -o {.}.byread {.}.sorted.bam")
-    byreads_bam="${map_out}/*.byread"
-    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --in {} --out {.}.filtered --minCover $coverage --minId $identity")
-    $(rm $byreads_bam)
-    filtered_bam="${map_out}/*.filtered"
-    $(ls $filtered_bam | parallel -j $processors "./dependencies/samtools_linux sort -O bam -o {.}.final {}")
-    $(rm $filtered_bam)
-    final_bam="${map_out}/*.final"
-    $(ls $final_bam | parallel -j $processors "./dependencies/bedtools_linux genomecov -ibam {} -bga > {.}.depth")
-else
-    $(ls $dfiles | parallel -j $processors "samtools sort -n -O bam -o {.}.byread {.}.sorted.bam")
-    byreads_bam="${map_out}/*.byread"
-    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --in {} --out {.}.filtered --minCover $coverage --minId $identity")
-    $(rm $byreads_bam)
-    filtered_bam="${map_out}/*.filtered"
-    $(ls $filtered_bam | parallel -j $processors "samtools sort -O bam -o {.}.final {}")
-    $(rm $filtered_bam)
-    final_bam="${map_out}/*.final"
-    $(ls $final_bam | parallel -j $processors "./dependencies/bedtools_linux genomecov -ibam {} -bga > {.}.depth")
-fi
+$(ls $dfiles | parallel -j $processors "./dependencies/samtools_darwin sort -n -O bam -o {.}.byread {.}.sorted.bam")
+byreads_bam="${map_out}/*.byread"
+$(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_darwin --in {} --out {.}.filtered --minCover $coverage --minId $identity")
+$(rm $byreads_bam)
+filtered_bam="${map_out}/*.filtered"
+$(ls $filtered_bam | parallel -j $processors "./dependencies/samtools_darwin sort -O bam -o {.}.final {}")
+$(rm $filtered_bam)
+final_bam="${map_out}/*.final"
+$(ls $final_bam | parallel -j $processors "./dependencies/bedtools_darwin genomecov -ibam {} -bga > {.}.depth")
 
 for F in $final_bam; do
     a="$(echo $F | sed s/final/filtered.sorted.bam/)"

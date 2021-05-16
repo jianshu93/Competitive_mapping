@@ -98,9 +98,9 @@ dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
-    $(./dependencies/seqtk_linux rename $F ${SAMPLE}. > ${output}/${SAMPLE}.renamed.fasta)
-    $(grep -E '^>' ${output}/${SAMPLE}.renamed.fasta | sed 's/>//' | awk '{print $1}' | tr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
-    $(cat ${output}/${SAMPLE}.renamed.fasta >> ${output}/all_mags_rename.fasta)
+    $(./dependencies/seqtk_linux rename $F ${SAMPLE}. > ${output}/${SAMPLE}.fasta)
+    $(grep -E '^>' ${output}/${SAMPLE}.fasta | sed 's/>//' | awk '{print $1}' | tr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
+    $(cat ${output}/${SAMPLE}.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
 done
 
@@ -133,20 +133,35 @@ else
 fi
 echo "reads mapping done"
 
-$(./dependencies/samtools_linux view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
-$(rm ${output}/all_mags_rename.sam)
-$(./dependencies/samtools_linux sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
-$(rm ${output}/all_mags_rename.bam)
-
-echo "extracting bam files for each genome"
-dfiles_rename="${output}/*_rename.txt"
-$(./dependencies/samtools_linux index ${output}/all_mags_rename_sorted.bam)
-#for F in $dfiles_rename; do
-    #BASE=${F##*/}
-	#SAMPLE=${BASE%.*}
-    #$(./dependencies/samtools_linux view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
-    #$(rm $F)
-#done
-$(ls $dfiles_rename | parallel -j $threads "./dependencies/samtools_linux view -bS ${output}/all_mags_rename_sorted.bam $(cat {}) > ${output}/{_}.sorted.bam")
-
+if ! command -v samtools &> /dev/null
+then
+    $(./dependencies/samtools_linux view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
+    $(rm ${output}/all_mags_rename.sam)
+    $(./dependencies/samtools_linux sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
+    $(rm ${output}/all_mags_rename.bam)
+    echo "extracting bam files for each genome"
+    dfiles_rename="${output}/*_rename.txt"
+    $(./dependencies/samtools_linux index ${output}/all_mags_rename_sorted.bam)
+    for F in $dfiles_rename; do
+        BASE=${F##*/}
+	    SAMPLE=${BASE%_*}
+        $(./dependencies/samtools_linux view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+        $(rm $F)
+    done
+else
+    $(samtools view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
+    $(rm ${output}/all_mags_rename.sam)
+    $(samtools sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
+    $(rm ${output}/all_mags_rename.bam)
+    echo "extracting bam files for each genome"
+    dfiles_rename="${output}/*_rename.txt"
+    $(samtools index ${output}/all_mags_rename_sorted.bam)
+    for F in $dfiles_rename; do
+        BASE=${F##*/}
+	    SAMPLE=${BASE%_*}
+        $(samtools view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+        $(rm $F)
+    done
+fi
+#$(ls $dfiles_rename | parallel -j $processors "./dependencies/samtools_linux view -bS ${output}/all_mags_rename_sorted.bam $(cat {}) > ${output}/{_}.sorted.bam")
 echo "All done"
