@@ -25,11 +25,17 @@ freebayes -f ./bam_out_demo/lab5_MAG.001.fasta lab5_MAG.001.filtered.sorted.bam 
 ```
 # Comparison with existing tools: coverm v0.6.0
 
-|  genome | jTAD80  | trimmed_mean 80  |
-|---|---|---|
-|   |   |   |
-|   |   |   |
-|   |   |   |
+Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech.
+```
+coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
+```
+
+|genome|jTAD80|trimmed_mean80|
+|MaxBin.001|237.630612913058|237.69215|
+|MaxBin.012|102.648059599816|102.73|
+|MaxBin.035_sub|6.39439612909493|6.6497817|
+|MaxBin.047|22.7083246568264|22.750353|
+|MaxBin.051|12.8719810873753|13.105129|
 
 
 # Dependencies
@@ -47,9 +53,13 @@ brew install ggrep
 ```
 
 # Reference
+Li, H and R Durbin. 2009. “Fast and Accurate Short Read Alignment with Burrows-Wheeler Transform.” 25(14):1754–60.
+Li, Heng et al. 2009. “The Sequence Alignment/Map Format and SAMtools.” Bioinformatics 25(16):2078–79.
+Quinlan, Aaron R. and Ira M. Hall. 2010. “BEDTools: a Flexible Suite of Utilities for Comparing Genomic Features.” Bioinformatics 26(6):841–42.
 Garrison, Erik and Gabor Marth. 2012. “Haplotype-Based Variant Detection From Short-Read Sequencing.” 1–9. Retrieved (https://arxiv.org/abs/1207.3907).
 Li, Heng et al. 2009. “The Sequence Alignment/Map Format and SAMtools.” Bioinformatics 1–2.
-Quinlan, Aaron R. and Ira M. Hall. 2010. “BEDTools: a Flexible Suite of Utilities for Comparing Genomic Features.” Bioinformatics 26(6):841–42.
+Smruthi Karthikeyan, Minjae K. P. H.-R. J. K. H. J. C. S. W. A. O. M. H. J. E. K. A. K. T. K. 2020. “Integrated Omics Elucidate the Mechanisms Driving the Rapid Biodegradation of Deepwater Horizon Oil in Intertidal Sediments Undergoing Oxic−Anoxic Cycles.” Environmental Science & Technology 54(16):1–12.
+
 
 
 
