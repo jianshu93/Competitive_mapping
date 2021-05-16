@@ -1,6 +1,6 @@
 # Competitive_mapping
 
-This is a wrapper for competitive reads mapping against a collection of genomes or metagenomic assembled genomes (MAGs).
+This is a wrapper for competitive reads mapping against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity.
 
 
 ```
@@ -76,6 +76,8 @@ Quinlan, Aaron R. and Ira M. Hall. 2010. “BEDTools: a Flexible Suite of Utilit
 Garrison, Erik and Gabor Marth. 2012. “Haplotype-Based Variant Detection From Short-Read Sequencing.” 1–9. Retrieved (https://arxiv.org/abs/1207.3907).
 
 Li, Heng et al. 2009. “The Sequence Alignment/Map Format and SAMtools.” Bioinformatics 1–2.
+
+Rodriguez-R, L M., D Tsementzi, C Luo, and K T. Konstantinidis. 2020. “Iterative Subtractive Binning of Freshwater Chronoseries Metagenomes Identifies Over 400 Novel Species and Their Ecologic Preferences.” Environmental Microbiology 1462–2920.15112–67.
 
 Smruthi Karthikeyan, Minjae K. P. H.-R. J. K. H. J. C. S. W. A. O. M. H. J. E. K. A. K. T. K. 2020. “Integrated Omics Elucidate the Mechanisms Driving the Rapid Biodegradation of Deepwater Horizon Oil in Intertidal Sediments Undergoing Oxic−Anoxic Cycles.” Environmental Science & Technology 54(16):1–12.
 
