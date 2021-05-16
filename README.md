@@ -18,7 +18,7 @@ gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ```
 
 1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
-2. Justified TAD80 is based on BedGraph.tad.rb in eveomics () but mapped reads are filtered before calculating.
+2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
 3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
 ```
 freebayes -f ./bam_out_demo/lab5_MAG.001.fasta lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
@@ -53,7 +53,7 @@ coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m 
 bwa, seqtk, filterBam, ruby, samtools, bedtools are required for this pipeline. freebayes can also be installed via conda:
 
 filterBam is introduced here: ftp://188.44.46.157/New/augustus.2.7/auxprogs/filterBam/doc/filterBam.pdf
-It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus)
+It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). Details here: https://github.com/Gaius-Augustus/Augustus/tree/master/auxprogs/filterBam
 ```
 conda install -c bioconda bwa freebayes samtools bedtools seqtk
 ```
