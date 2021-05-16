@@ -31,6 +31,7 @@ coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m 
 ```
 
 |genome|jTAD80|trimmed_mean80|
+|---|---|---|---|---|
 |MaxBin.001|237.630612913058|237.69215|
 |MaxBin.012|102.648059599816|102.73|
 |MaxBin.035_sub|6.39439612909493|6.6497817|
