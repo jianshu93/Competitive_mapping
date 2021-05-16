@@ -29,15 +29,13 @@ Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech.
 ```
 coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
 ```
-
-|genome|jTAD80|trimmed_mean80|
-|---|---|---|---|---|
-|MaxBin.001|237.630612913058|237.69215|
-|MaxBin.012|102.648059599816|102.73|
-|MaxBin.035_sub|6.39439612909493|6.6497817|
-|MaxBin.047|22.7083246568264|22.750353|
-|MaxBin.051|12.8719810873753|13.105129|
-
+| genome       | jTAD80     | trimmed_mean80     |
+| :------------- | :----------: | -----------: |
+|  MaxBin.001 | 237.630612913058  | 237.69215    |
+| MaxBin.012  | 102.648059599816 | 102.73 |
+| MaxBin.035_sub  | 6.39439612909493  | 6.6497817  |
+| MaxBin.047  | 22.7083246568264  | 22.750353  |
+| MaxBin.051  | 12.8719810873753  | 13.105129  |
 
 # Dependencies
 bwa, seqtk, filterBam, ruby, samtools, bedtools are required for this pipeline. freebayes can also be installed via conda:
