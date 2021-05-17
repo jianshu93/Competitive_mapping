@@ -12,7 +12,7 @@ reads1=./reads_R1.fastq.gz
 reads2=./reads_R2.fastq.gz
 output=./output
 intleav=./interleave.fastq.gz
-mapping="bwa"
+mapping="minimap2"
 
 while getopts ":d:o:(r1):(r2):i:m:T:h" option
 do
@@ -126,6 +126,15 @@ elif [[ "$mapping" == "bwa" ]]; then
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa_linux mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
+elif [[ "$mapping" == "minimap2" ]]; then
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(./dependencies/minimap2_linux -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(./dependencies/minimap2_linux -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else

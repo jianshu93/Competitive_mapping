@@ -50,15 +50,28 @@ done
 
 dfiles="${map_out}/*.fasta"
 
-$(ls $dfiles | parallel -j $processors "./dependencies/samtools_darwin sort -n -O bam -o {.}.byread {.}.sorted.bam")
-byreads_bam="${map_out}/*.byread"
-$(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_darwin --in {} --out {.}.filtered --minCover $coverage --minId $identity")
-$(rm $byreads_bam)
-filtered_bam="${map_out}/*.filtered"
-$(ls $filtered_bam | parallel -j $processors "./dependencies/samtools_darwin sort -O bam -o {.}.final {}")
-$(rm $filtered_bam)
-final_bam="${map_out}/*.final"
-$(ls $final_bam | parallel -j $processors "./dependencies/bedtools_darwin genomecov -ibam {} -bga > {.}.depth")
+if ! command -v samtools && ! command -v bedtools &> /dev/null
+then
+    $(ls $dfiles | parallel -j $processors "./dependencies/samtools_linux sort -n -O bam -o {.}.byread {.}.sorted.bam")
+    byreads_bam="${map_out}/*.byread"
+    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --best --in {} --out {.}.filtered --minCover $coverage --minId $identity")
+    $(rm $byreads_bam)
+    filtered_bam="${map_out}/*.filtered"
+    $(ls $filtered_bam | parallel -j $processors "./dependencies/samtools_linux sort -O bam -o {.}.final {}")
+    $(rm $filtered_bam)
+    final_bam="${map_out}/*.final"
+    $(ls $final_bam | parallel -j $processors "./dependencies/bedtools_linux genomecov -ibam {} -bga > {.}.depth")
+else
+    $(ls $dfiles | parallel -j $processors "samtools sort -n -O bam -o {.}.byread {.}.sorted.bam")
+    byreads_bam="${map_out}/*.byread"
+    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --best --in {} --out {.}.filtered --minCover $coverage --minId $identity")
+    $(rm $byreads_bam)
+    filtered_bam="${map_out}/*.filtered"
+    $(ls $filtered_bam | parallel -j $processors "samtools sort -O bam -o {.}.final {}")
+    $(rm $filtered_bam)
+    final_bam="${map_out}/*.final"
+    $(ls $final_bam | parallel -j $processors "bedtools genomecov -ibam {} -bga > {.}.depth")
+fi
 
 for F in $final_bam; do
     a="$(echo $F | sed s/final/filtered.sorted.bam/)"
@@ -66,7 +79,7 @@ for F in $final_bam; do
 done
 
 all_depth="${map_out}/*.depth"
-$(ls $all_depth | parallel -j $processors "grep -E '^{/.}.' {} > {.}.txt")
+$(ls $all_depth | parallel -j $processors "ggrep -E '^{/.}.' {} > {.}.txt")
 $(rm $all_depth)
 depth="${map_out}/*.txt"
 echo $jTAD

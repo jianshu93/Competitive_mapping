@@ -10,7 +10,7 @@ chmod a+x ./compet_map_bam.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 
 ### 1.competetive reads mapping
-./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bwa
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m minimap2
 
 ### 2.calculation of justified TAD80
 ./jTAD80.bash -d ./bam_out -o output.txt -p 24 -cov 75 -id 95 -j 0.8 
@@ -21,7 +21,7 @@ gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
 3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
 ```
-freebayes -f ./bam_out_demo/lab5_MAG.001.fasta lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
+freebayes -f ./bam_out/lab5_MAG.001.fasta ./bam_out/lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
 ```
 # Comparison with existing tools: coverm v0.6.0
 
@@ -50,12 +50,12 @@ coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m 
 
 
 # Dependencies
-bwa, seqtk, filterBam, ruby, samtools, bedtools are required for this pipeline. freebayes can also be installed via conda:
+bwa, seqtk, filterBam, ruby, samtools, bedtools and minimap2 are required for this pipeline. freebayes can also be installed via conda:
 
 filterBam is introduced here: ftp://188.44.46.157/New/augustus.2.7/auxprogs/filterBam/doc/filterBam.pdf
 It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). Details here: https://github.com/Gaius-Augustus/Augustus/tree/master/auxprogs/filterBam
 ```
-conda install -c bioconda bwa freebayes samtools bedtools seqtk
+conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2
 ```
 # MacOS
 

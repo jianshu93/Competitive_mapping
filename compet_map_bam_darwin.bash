@@ -10,7 +10,7 @@ reads1=./reads_R1.fastq
 reads2=./reads_R2.fastq
 output=./output
 intleav=./interleave.fastq
-mapping="bwa"
+mapping="minimap2"
 
 while getopts ":d:o:(r1):(r2):i:m:T:h" option
 do
@@ -122,6 +122,15 @@ elif [[ "$mapping" == "bwa" ]]; then
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa_darwin mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
+elif [[ "$mapping" == "minimap2" ]]; then
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(./dependencies/minimap2_darwin -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(./dependencies/minimap2_darwin -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
 else
     echo "not supported mapping method"
 fi
