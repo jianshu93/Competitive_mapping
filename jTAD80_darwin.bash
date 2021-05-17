@@ -17,12 +17,12 @@ coverage=75
 identity=95
 jTAD=0.8
 output=output.txt
-while getopts ":d:o:(cov):(id):p:j:h" option
+while getopts ":d:o:c:i:p:j:h" option
 do
 	case $option in
 		d) map_out=$OPTARG;;
-        cov) coverage=$OPTARG;;
-        id) identity=$OPTARG;;
+        c) coverage=$OPTARG;;
+        i) identity=$OPTARG;;
         o) output=$OPTARG;;
         p) processors=$OPTARG;;
         j) jTAD=$OPTARG;;
@@ -37,8 +37,8 @@ do
             
             -d directory contains output from competative mapping, fasta file and
                 sorted bam file for that fasta (sorted by reference)
-            -cov coverage faction of mapped reads to be filtered, default 75 (75%)
-            -id identity of mapped reads to be filtered, default 95 (95%)
+            -c coverage faction of mapped reads to be filtered, default 75 (75%)
+            -i identity of mapped reads to be filtered, default 95 (95%)
             -o output file for jTAD80 index for each genome in the input directory
             -p number of processors to run for each genome
             -j justified TAD central range to consider, between 0 and 1, default 0.8

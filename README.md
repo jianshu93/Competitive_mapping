@@ -2,7 +2,7 @@
 
 This is a wrapper for competitive reads mapping against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity.
 
-
+# Linux (tested on Ubuntu 18.0.4, CenOS and RHEL 7)
 ```
 git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
@@ -10,11 +10,33 @@ chmod a+x ./compet_map_bam.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 
 ### 1.competetive reads mapping
-./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m minimap2
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa
 
-### 2.calculation of justified TAD80
-./jTAD80.bash -d ./bam_out -o output.txt -p 24 -cov 75 -id 95 -j 0.8 
+### 2.calculation of justified TAD80 using filterBam
+./jTAD80.bash -d ./bam_out -o output.txt -p 24 -c 75 -i 95 -j 0.8
 
+### 3.calculation of justified TAD80 using coverm filter (for filtering only)
+./jTAD80_new.bash -d ./bam_out1 -o output.txt -p 24 -c 0.70 -i 0.85 -j 0.8
+```
+# MacOS (Tested on MacOS Mojave and Big Sur, x86)
+All dependencies can be installed cond except filterBam (provided in dependencies). You may need to install gnu-coreutils, gawk, ggrep, gsed et.al. first via brew:
+```
+brew install coreutils
+brew install gawk
+brew install ggrep
+brew install gsed
+
+git clone https://github.com/jianshu93/Competitive_mapping
+cd Competitive_mapping
+
+### 1.competetive reads mapping
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa
+
+### 2.calculation of justified TAD80 using filterBam
+./jTAD80_darwin.bash -d ./bam_out -o output.txt -p 4 -c 75 -i 95 -j 0.8
+
+### 3.calculation of justified TAD80 using coverm filter (for filtering only)
+./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8
 ```
 
 1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
@@ -47,25 +69,17 @@ coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m 
 | MetaBAT.029    | 11.71779875 | 11.882411      |
 | MetaBAT.030    | 9.325849312 | 9.539687       |
 
-
-
 # Dependencies
 bwa, seqtk, filterBam, ruby, samtools, bedtools and minimap2 are required for this pipeline. freebayes can also be installed via conda:
 
-filterBam is introduced here: ftp://188.44.46.157/New/augustus.2.7/auxprogs/filterBam/doc/filterBam.pdf
+filterBam (provided) is introduced here: ftp://188.44.46.157/New/augustus.2.7/auxprogs/filterBam/doc/filterBam.pdf
 It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). Details here: https://github.com/Gaius-Augustus/Augustus/tree/master/auxprogs/filterBam
 ```
 conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2
 ```
-# MacOS
+CoverM can be installed here:https://github.com/wwood/CoverM
+I contributed to v0.5.0 for CoverM on comparing bedtools -genomecov and samtools depth to coverm genome, see here: https://github.com/wwood/CoverM/releases/tag/v0.5.0
 
-All dependencies can be installed cond except filterBam. You may need to install gnu-coreutils, gawk, ggrep, gsed et.al. first via brew:
-```
-brew install coreutils
-brew install gawk
-brew install ggrep
-brew install gsed
-```
 
 # Reference
 Li, H and R Durbin. 2009. “Fast and Accurate Short Read Alignment with Burrows-Wheeler Transform.” 25(14):1754–60.

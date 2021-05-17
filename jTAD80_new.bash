@@ -9,7 +9,7 @@
 ### due to closely related MAGs (population genomes)
 ### We called it justified TAD80, jTAD80. This is consistent with the CoverM trimmed_mean metric (TMD80)
 ### (coverm option:-m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75 --min-covered-fraction 0)
-### dependencies: gnu parallel, samtools, filterBam, bedtools, ruby
+### dependencies: gnu parallel, samtools, coverm, bedtools, ruby
 
 processors=$(nproc)
 map_out=./bam_out
@@ -17,12 +17,12 @@ coverage=0.75
 identity=0.95
 jTAD=0.8
 output=output.txt
-while getopts ":d:o:(cov):(id):p:j:h" option
+while getopts ":d:o:c:i:p:j:h" option
 do
 	case $option in
 		d) map_out=$OPTARG;;
-        cov) coverage=$OPTARG;;
-        id) identity=$OPTARG;;
+        c) coverage=$OPTARG;;
+        i) identity=$OPTARG;;
         o) output=$OPTARG;;
         p) processors=$OPTARG;;
         j) jTAD=$OPTARG;;
@@ -33,12 +33,12 @@ do
 		    exit 1
 			;;
 		h) 
-           echo "usage: jTAD80.bash -d ./bam_out -o output.txt -p 8 -cov 75 -id 95 -j 0.8
+           echo "usage: jTAD80.bash -d ./bam_out -o output.txt -p 8 -cov 0.75 -id 0.95 -j 0.8
             
             -d directory contains output from competative mapping, fasta file and
                 sorted bam file for that fasta (sorted by reference)
-            -cov coverage faction of mapped reads to be filtered, default 75 (75%)
-            -id identity of mapped reads to be filtered, default 95 (95%)
+            -c coverage faction of mapped reads to be filtered, default 75 (75%)
+            -i identity of mapped reads to be filtered, default 95 (95%)
             -o output file for jTAD80 index for each genome in the input directory
             -p number of processors to run for each genome
             -j justified TAD central range to consider, between 0 and 1, default 0.8
@@ -48,15 +48,19 @@ do
 	esac
 done
 
+echo "using identity $identity for filtering"
+echo "using coverage $coverage for filtering"
+echo "using directory $map_out"
+
 dfiles="${map_out}/*.fasta"
 
-if ! command -v coverm && ! command -v bedtools &> /dev/null
+if ! command -v bedtools &> /dev/null
 then
     $(ls $dfiles | parallel -j $processors "./dependencies/coverm_linux filter --bam-files {.}.sorted.bam -o {.}.final -t 2 --min-read-percent-identity $identity --min-read-aligned-percent $coverage")
     final_bam="${map_out}/*.final"
     $(ls $final_bam | parallel -j $processors "./dependencies/bedtools_linux genomecov -ibam {} -bga > {.}.depth")
 else
-    $(ls $dfiles | parallel -j $processors "coverm filter --bam-files {.}.sorted.bam -o {.}.final -t 2 --min-read-percent-identity $identity --min-read-aligned-percent $coverage")
+    $(ls $dfiles | parallel -j $processors "./dependencies/coverm_linux filter --bam-files {.}.sorted.bam -o {.}.final -t 2 --min-read-percent-identity $identity --min-read-aligned-percent $coverage")
     final_bam="${map_out}/*.final"
     $(ls $final_bam | parallel -j $processors "bedtools genomecov -ibam {} -bga > {.}.depth")
 fi
