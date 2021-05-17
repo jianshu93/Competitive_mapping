@@ -95,7 +95,7 @@ for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
     $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.fasta)
-    $(ggrep -E '^>' ${output}/${SAMPLE}.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}.rename.txt)
+    $(ggrep -E '^>' ${output}/${SAMPLE}.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
     $(cat ${output}/${SAMPLE}.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
 done
@@ -142,10 +142,10 @@ $(./dependencies/samtools_darwin sort -@ $threads -O bam -o ${output}/all_mags_r
 $(rm ${output}/all_mags_rename.bam)
 
 echo "extracting bam files for each genome"
-dfiles_rename="${output}/*.rename.txt"
+dfiles_rename="${output}/*_rename.txt"
 for F in $dfiles_rename; do
     BASE=${F##*/}
-	SAMPLE=${BASE%.*}
+	SAMPLE=${BASE%_*}
     $(./dependencies/samtools_darwin index ${output}/all_mags_rename_sorted.bam)
     $(./dependencies/samtools_darwin view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
     $(rm $F)

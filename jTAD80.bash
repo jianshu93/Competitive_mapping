@@ -54,7 +54,7 @@ if ! command -v samtools && ! command -v bedtools &> /dev/null
 then
     $(ls $dfiles | parallel -j $processors "./dependencies/samtools_linux sort -n -O bam -o {.}.byread {.}.sorted.bam")
     byreads_bam="${map_out}/*.byread"
-    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --best --in {} --out {.}.filtered --minCover $coverage --minId $identity")
+    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --in {} --out {.}.filtered --minCover $coverage --minId $identity")
     $(rm $byreads_bam)
     filtered_bam="${map_out}/*.filtered"
     $(ls $filtered_bam | parallel -j $processors "./dependencies/samtools_linux sort -O bam -o {.}.final {}")
@@ -65,7 +65,7 @@ else
     $(ls $dfiles | parallel -j $processors "samtools sort -n -O bam -o {.}.byread {.}.sorted.bam")
     byreads_bam="${map_out}/*.byread"
     #$(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --best --in {} --out {.}.filtered --minCover $coverage --minId $identity")
-    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --uniqThresh 0.90 --in {} --out {.}.filtered --minCover $coverage --minId $identity")
+    $(ls $byreads_bam | parallel -j $processors "./dependencies/filterBam_linux --in {} --out {.}.filtered --minCover $coverage --minId $identity")
     $(rm $byreads_bam)
     filtered_bam="${map_out}/*.filtered"
     $(ls $filtered_bam | parallel -j $processors "samtools sort -O bam -o {.}.final {}")
