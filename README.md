@@ -42,7 +42,7 @@ chmod a+x ./*.bash
 ```
 
 1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy) (bwa-mem and bowtie2 is supported, see an example below). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
-https://user-images.githubusercontent.com/38149286/118576078-d2b34800-b755-11eb-85c2-fdbea1f6fd62.png
+![alt text](https://user-images.githubusercontent.com/38149286/118576078-d2b34800-b755-11eb-85c2-fdbea1f6fd62.png)
 
 2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
 3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
