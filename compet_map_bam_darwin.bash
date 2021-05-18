@@ -10,7 +10,7 @@ reads1=./reads_R1.fastq
 reads2=./reads_R2.fastq
 output=./output
 intleav=./interleave.fastq
-mapping="minimap2"
+mapping="bwa-mem"
 
 while getopts ":d:o:(r1):(r2):i:m:T:h" option
 do
@@ -38,7 +38,7 @@ do
                 -i interleaved reads to map to the MAG collection
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
-                -m mapping method, default bwa, bowtie2 is also supported but there
+                -m mapping method, default bwa-mem, bwa-mem2 bowtie2 and minimap2 is also supported but there
                     are known bug for it if using --threads value larger than 1
                 "
             exit 1
@@ -111,7 +111,7 @@ if [[ "$mapping" == "bowtie2" ]]; then
         echo "Doing reads mapping using interleaved reads"
         $(bowtie2 -x ${output}/all_mags_rename -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
-elif [[ "$mapping" == "bwa" ]]; then
+elif [[ "$mapping" == "bwa-mem" ]]; then
     echo "Indexing reference genomes using bwa index"
     $(./dependencies/bwa_darwin index ${output}/all_mags_rename.fasta)
     echo "Indexing done"
@@ -120,7 +120,7 @@ elif [[ "$mapping" == "bwa" ]]; then
         $(./dependencies/bwa_darwin mem -t $threads ${output}/all_mags_rename $reads1 $reads2 > ${output}/all_mags_rename.sam)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(./dependencies/bwa_darwin mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+        $(./dependencies/bwa_darwin mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
 elif [[ "$mapping" == "minimap2" ]]; then
     if [ -z "$intleav" ]; then
@@ -129,6 +129,18 @@ elif [[ "$mapping" == "minimap2" ]]; then
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/minimap2_darwin -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
+elif [[ "$mapping" == "bwa-mem2" ]]; then
+    echo "Indexing reference genomes using bwa-mem2 index"
+    $(./dependencies/bwa-mem2_darwin index ${output}/all_mags_rename.fasta)
+    echo "Indexing done"
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(./dependencies/bwa-mem2_darwin mem -t $threads -p ${output}/all_mags_rename.fasta $reads1 $reads2 > ${output}/all_mags_rename.sam)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(./dependencies/bwa-mem2_darwin mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else

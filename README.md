@@ -1,16 +1,17 @@
 # Competitive_mapping
 
-This is a wrapper for competitive reads mapping against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity.
+This is a wrapper for competitive reads mapping (see instrain website for what is competative mapping here: https://instrain.readthedocs.io/en/master/important_concepts.html) against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity. Several reads mapping softwares are supported, including bowtie2, bwa-mem, bwa-mem2 (https://ieeexplore.ieee.org/abstract/document/8820962?casa_token=KrlJpG5fVt8AAAAA:NUlxBO2400z4M-sFMCbDn2tSXTZj_y0si_MQgNbDvPd3y223cpV-si6b8DDWCWhl-1iSI3Gh), minimap2. bwa-mem2 is 2x speedup comparing to bwa-mem with exactly the same output. Thanks to bioinformatics team at Georgia Tech (https://www.cc.gatech.edu/~saluru/)!
 
 # Linux (tested on Ubuntu 18.0.4, CenOS and RHEL 7)
 ```
 git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
-chmod a+x ./compet_map_bam.bash
+chmod a+x dependencies/*
+chmod a+x ./*.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 
 ### 1.competetive reads mapping
-./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa-mem
 
 ### 2.calculation of justified TAD80 using filterBam
 ./jTAD80.bash -d ./bam_out -o output.txt -p 24 -c 75 -i 95 -j 0.8
@@ -28,9 +29,10 @@ brew install gsed
 
 git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
-
+chmod a+x dependencies/*
+chmod a+x ./*.bash
 ### 1.competetive reads mapping
-./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa.gz -T 24 -o ./bam_out -m bwa-mem
 
 ### 2.calculation of justified TAD80 using filterBam
 ./jTAD80_darwin.bash -d ./bam_out -o output.txt -p 4 -c 75 -i 95 -j 0.8
@@ -77,8 +79,7 @@ It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). D
 ```
 conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2
 ```
-CoverM can be installed here:https://github.com/wwood/CoverM
-I contributed to v0.5.0 for CoverM on comparing bedtools -genomecov and samtools depth to coverm genome, see here: https://github.com/wwood/CoverM/releases/tag/v0.5.0
+CoverM can be installed here:https://github.com/wwood/CoverM I contributed to v0.5.0 for CoverM on comparing bedtools -genomecov and samtools depth to coverm genome, coverm does not take care of secondary alignemnts at the first place but both samtools and bedtools does. It was fixed in the v0.5.0. See here: https://github.com/wwood/CoverM/releases/tag/v0.5.0
 
 
 # Reference

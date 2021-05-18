@@ -12,7 +12,7 @@ reads1=./reads_R1.fastq.gz
 reads2=./reads_R2.fastq.gz
 output=./output
 intleav=./interleave.fastq.gz
-mapping="minimap2"
+mapping="bwa-mem"
 
 while getopts ":d:o:(r1):(r2):i:m:T:h" option
 do
@@ -116,8 +116,8 @@ if [[ "$mapping" == "bowtie2" ]]; then
         $(bowtie2 -x ${output}/all_mags_rename -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
     $(rm ${output}/all_mags_rename.fasta)
-elif [[ "$mapping" == "bwa" ]]; then
-    echo "Indexing reference genomes using bwa index"
+elif [[ "$mapping" == "bwa-mem" ]]; then
+    echo "Indexing reference genomes using bwa-mem index"
     $(./dependencies/bwa_linux index ${output}/all_mags_rename.fasta)
     echo "Indexing done"
     if [ -z "$intleav" ]; then
@@ -125,7 +125,7 @@ elif [[ "$mapping" == "bwa" ]]; then
         $(./dependencies/bwa_linux mem -t $threads ${output}/all_mags_rename $reads1 $reads2 > ${output}/all_mags_rename.sam)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(./dependencies/bwa_linux mem -p -t $threads -v 1 ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+        $(./dependencies/bwa_linux mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 elif [[ "$mapping" == "minimap2" ]]; then
@@ -135,6 +135,18 @@ elif [[ "$mapping" == "minimap2" ]]; then
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/minimap2_linux -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
+elif [[ "$mapping" == "bwa-mem2" ]]; then
+    echo "Indexing reference genomes using bwa-mem2 index"
+    $(./dependencies/bwa-mem2 index ${output}/all_mags_rename.fasta)
+    echo "Indexing done"
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(./dependencies/bwa-mem2 mem -t $threads -p ${output}/all_mags_rename.fasta $reads1 $reads2 > ${output}/all_mags_rename.sam)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(./dependencies/bwa-mem2 mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else
