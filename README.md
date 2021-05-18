@@ -26,6 +26,7 @@ brew install coreutils
 brew install gawk
 brew install ggrep
 brew install gsed
+brew install bwa-mem2
 
 git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
@@ -79,7 +80,8 @@ bwa, seqtk, filterBam, ruby, samtools, bedtools and minimap2 are required for th
 filterBam (provided) is introduced here: ftp://188.44.46.157/New/augustus.2.7/auxprogs/filterBam/doc/filterBam.pdf
 It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). Details here: https://github.com/Gaius-Augustus/Augustus/tree/master/auxprogs/filterBam
 ```
-conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2
+### bwa-mem2 is only supported for linux in conda channel but you can installed on MacOS via brew
+conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2 bwa-mem2
 ```
 CoverM can be installed here:https://github.com/wwood/CoverM 
 
@@ -101,8 +103,6 @@ Rodriguez-R, L M., D Tsementzi, C Luo, and K T. Konstantinidis. 2020. “Iterati
 
 Smruthi Karthikeyan, Minjae K. P. H.-R. J. K. H. J. C. S. W. A. O. M. H. J. E. K. A. K. T. K. 2020. “Integrated Omics Elucidate the Mechanisms Driving the Rapid Biodegradation of Deepwater Horizon Oil in Intertidal Sediments Undergoing Oxic−Anoxic Cycles.” Environmental Science & Technology 54(16):1–12.
 
+Li, Heng. 2013. “Aligning Sequence Reads, Clone Sequences and Assembly Contigs with BWA-MEM.” arXiv 1–3.
+
 Vasimuddin, Md, Sanchit Misra, Heng Li, and Srinivas Aluru. 2019. “Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems.” IEEE International Parallel and Distributed Processing Symposium 314–24.
-
-
-
-
