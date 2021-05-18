@@ -41,7 +41,9 @@ chmod a+x ./*.bash
 ./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8
 ```
 
-1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
+1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy) (bwa-mem and bowtie2 is supported, see an example below). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
+https://user-images.githubusercontent.com/38149286/118576078-d2b34800-b755-11eb-85c2-fdbea1f6fd62.png
+
 2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
 3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
 ```
@@ -79,7 +81,9 @@ It can be compiled under augustus(https://github.com/Gaius-Augustus/Augustus). D
 ```
 conda install -c bioconda bwa freebayes samtools bedtools seqtk minimap2
 ```
-CoverM can be installed here:https://github.com/wwood/CoverM I contributed to v0.5.0 for CoverM on comparing bedtools -genomecov and samtools depth to coverm genome, coverm does not take care of secondary alignemnts at the first place but both samtools and bedtools does. It was fixed in the v0.5.0. See here: https://github.com/wwood/CoverM/releases/tag/v0.5.0
+CoverM can be installed here:https://github.com/wwood/CoverM 
+
+I contributed to v0.5.0 for CoverM on comparing bedtools -genomecov and samtools depth to coverm genome, coverm does not take care of secondary alignemnts at the first place but both samtools and bedtools does. It was fixed in the v0.5.0. See here: https://github.com/wwood/CoverM/releases/tag/v0.5.0
 
 
 # Reference
@@ -88,6 +92,7 @@ Li, H and R Durbin. 2009. “Fast and Accurate Short Read Alignment with Burrows
 Li, Heng et al. 2009. “The Sequence Alignment/Map Format and SAMtools.” Bioinformatics 25(16):2078–79.
 
 Quinlan, Aaron R. and Ira M. Hall. 2010. “BEDTools: a Flexible Suite of Utilities for Comparing Genomic Features.” Bioinformatics 26(6):841–42.
+
 Garrison, Erik and Gabor Marth. 2012. “Haplotype-Based Variant Detection From Short-Read Sequencing.” 1–9. Retrieved (https://arxiv.org/abs/1207.3907).
 
 Li, Heng et al. 2009. “The Sequence Alignment/Map Format and SAMtools.” Bioinformatics 1–2.
@@ -96,7 +101,7 @@ Rodriguez-R, L M., D Tsementzi, C Luo, and K T. Konstantinidis. 2020. “Iterati
 
 Smruthi Karthikeyan, Minjae K. P. H.-R. J. K. H. J. C. S. W. A. O. M. H. J. E. K. A. K. T. K. 2020. “Integrated Omics Elucidate the Mechanisms Driving the Rapid Biodegradation of Deepwater Horizon Oil in Intertidal Sediments Undergoing Oxic−Anoxic Cycles.” Environmental Science & Technology 54(16):1–12.
 
-
+Vasimuddin, Md, Sanchit Misra, Heng Li, and Srinivas Aluru. 2019. “Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems.” IEEE International Parallel and Distributed Processing Symposium 314–24.
 
 
 
