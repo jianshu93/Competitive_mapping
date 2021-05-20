@@ -131,10 +131,10 @@ elif [[ "$mapping" == "bwa-mem" ]]; then
 elif [[ "$mapping" == "minimap2" ]]; then
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(./dependencies/minimap2_linux -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
+        $(./dependencies/minimap2_linux -ax sr --MD -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(./dependencies/minimap2_linux -ax sr -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
+        $(./dependencies/minimap2_linux -ax sr --MD -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 elif [[ "$mapping" == "bwa-mem2" ]]; then
@@ -143,7 +143,7 @@ elif [[ "$mapping" == "bwa-mem2" ]]; then
     echo "Indexing done"
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(./dependencies/bwa-mem2 mem -t $threads -p ${output}/all_mags_rename.fasta $reads1 $reads2 > ${output}/all_mags_rename.sam)
+        $(./dependencies/bwa-mem2 mem -t $threads ${output}/all_mags_rename.fasta $reads1 $reads2 > ${output}/all_mags_rename.sam)
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa-mem2 mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
