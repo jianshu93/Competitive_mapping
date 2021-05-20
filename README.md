@@ -56,6 +56,9 @@ bowtie2 mapping, MAG001, recruitment plot
 minimap2 mapping, MAG001, recruitment plot
 ![alt text](https://user-images.githubusercontent.com/38149286/118922207-9e7f8900-b907-11eb-9960-b599cb9f004e.png)
 
+bbmap mapping, MAG001, recruitment plot
+![alt text](https://user-images.githubusercontent.com/38149286/119014629-27c5a880-b966-11eb-87a3-7a5f5ea39ba8.png)
+
 
 # Comparison between mapping methods. jTAD is calulated after coverm filter
 bwa/bwa-mem2
@@ -77,6 +80,13 @@ minimap2
 |----------------|-------------|
 | lab5_MAG.001    | 11.981560901976831      |
 | lab5_MAG.002    | 5.802688239625047      |
+
+bbmap
+| genome_name    | jTAD80      |
+|----------------|-------------|
+| lab5_MAG.001    | 11.97209484596707      |
+| lab5_MAG.002    | 5.754495663260725      |
+
 
 
 # variant calling for each MAG mapped after filtering (filtered MAGs in the output directory)
@@ -139,3 +149,8 @@ Smruthi Karthikeyan, Minjae K. P. H.-R. J. K. H. J. C. S. W. A. O. M. H. J. E. K
 Li, Heng. 2013. “Aligning Sequence Reads, Clone Sequences and Assembly Contigs with BWA-MEM.” arXiv 1–3.
 
 Vasimuddin, Md, Sanchit Misra, Heng Li, and Srinivas Aluru. 2019. “Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems.” IEEE International Parallel and Distributed Processing Symposium 314–24.
+
+Subramaniyan, Arun et al. 2020. “Accelerating Maximal-Exact-Match Seeding with Enumerated Radix Trees.” arXiv 1–10.
+
+Li, Heng. 2018. “Minimap2: Pairwise Alignment for Nucleotide Sequences.” Bioinformatics 1–7.
+

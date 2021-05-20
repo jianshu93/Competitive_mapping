@@ -1,9 +1,10 @@
 #!/bin/bash
 ### Jianshu Zhao (jianshu.zhao@gatech.edu)
-### competitive mapping and extracing of MAG bam file for recruitment plot ().
+### competitive mapping and extracing of MAG bam file for recruitment plot and TAD80 calculation.
 ### dependencies:
-### seqtk, samtools and bowtie2/bwa，all can be installed via conda
-
+### seqtk, samtools and bowtie2/bwa/bwa-mem2/minimap2/bbmap，all can be installed via conda
+### bowtie2, bbmap and samtools binaries are not platform indenpendent. You may need to install
+### them before running this pipeline
 
 ## default settings
 threads=$(nproc)
@@ -42,8 +43,9 @@ do
                 -i interleaved reads to map to the MAG collection, can be gzipped format
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
-                -m mapping method, default bwa, bowtie2 is also supported but there
-                    are known bug for it if using --threads value larger than 1
+                -m mapping method, default bwa-mem, bowtie2/minimap2/bbmap is also supported but there
+                    are known bug for bowtie2 if using --threads value larger than 1. Bowtie2 and bbmap
+                    should be installed via conda before using.
                 "
             exit 1
             ;;
@@ -93,6 +95,10 @@ else
     $(mkdir $output)
 fi
 
+
+
+
+
 echo "Rename MAG headers and do reads mapping"
 dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
@@ -105,6 +111,13 @@ for F in $dfiles; do
 done
 
 if [[ "$mapping" == "bowtie2" ]]; then
+    if ! command -v bowtie2 &> /dev/null
+    then
+        echo "bowtie2 could not be found, please installed via conda"
+        exit
+    else
+        echo "bowtie2 is installed"
+    fi
     echo "Indexing reference genomes using bowtie2-build"
     $(bowtie2-build --threads $threads ${output}/all_mags_rename.fasta ${output}/all_mags_rename)
     echo "Indexing done"
@@ -147,6 +160,22 @@ elif [[ "$mapping" == "bwa-mem2" ]]; then
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa-mem2 mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
+elif [[ "$mapping" == "bbmap" ]]; then
+    if ! command -v bbmap.sh &> /dev/null
+    then
+        echo "bbmap.sh could not be found"
+        exit
+    else
+        echo "bbmap.sh is installed"
+    fi
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else

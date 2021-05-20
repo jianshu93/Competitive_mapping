@@ -1,8 +1,10 @@
 #!/bin/bash
 ### Jianshu Zhao (jianshu.zhao@gatech.edu)
-### competitive mapping and extracing of MAG bam file for recruitment plot ().
+### competitive mapping and extracing of MAG bam file for recruitment plot and TAD80 calculation.
 ### dependencies:
-### seqtk, samtools and bowtie2/bwa/minimap2/ binaries are offered
+### seqtk, samtools and bowtie2/bwa/bwa-mem2/minimap2/bbmap，all can be installed via conda
+### bowtie2, bbmap and samtools binaries are not platform indenpendent. You may need to install
+### them before running this pipeline
 
 threads=$(nproc)
 dir_mag=./MAG
@@ -101,6 +103,13 @@ for F in $dfiles; do
 done
 
 if [[ "$mapping" == "bowtie2" ]]; then
+    if ! command -v bowtie2 &> /dev/null
+    then
+        echo "bowtie2 could not be found, please installed via conda"
+        exit
+    else
+        echo "bowtie2 is installed"
+    fi
     echo "Indexing reference genomes using bowtie2-build"
     $(bowtie2-build --threads $threads ${output}/all_mags_rename.fasta ${output}/all_mags_rename)
     echo "Indexing done"
@@ -143,6 +152,22 @@ elif [[ "$mapping" == "bwa-mem2" ]]; then
     else
         echo "Doing reads mapping using interleaved reads"
         $(./dependencies/bwa-mem2_darwin mem -p -t $threads ${output}/all_mags_rename.fasta $intleav > ${output}/all_mags_rename.sam)
+    fi
+    $(rm ${output}/all_mags_rename.fasta)
+elif [[ "$mapping" == "bbmap" ]]; then
+    if ! command -v bbmap.sh &> /dev/null
+    then
+        echo "bbmap.sh could not be found"
+        exit
+    else
+        echo "bbmap.sh is installed"
+    fi
+    if [ -z "$intleav" ]; then
+        echo "Doing reads mapping using forward and reverse reads"
+        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+    else
+        echo "Doing reads mapping using interleaved reads"
+        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else
