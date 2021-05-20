@@ -65,11 +65,11 @@ bwa/bwa-mem2
 | lab5_MAG.002    | 5.808299064413597      |
 
 
-bowtie
+bowtie2
 | genome_name    | jTAD80      |
 |----------------|-------------|
-| lab5_MAG.001    | 11.948344025447575      |
-| lab5_MAG.002    | 5.692994774363855      |
+| lab5_MAG.001    | 11.914096173780646      |
+| lab5_MAG.002    | 5.760955878391725      |
 
 
 minimap2
@@ -83,13 +83,13 @@ minimap2
 ```
 freebayes -f ./bam_out/lab5_MAG.001.fasta ./bam_out/lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
 ```
-# Comparison with existing tools: coverm v0.6.0
+# Comparison with existing tools: coverm v0.6.0 using real dataset
 
 Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech.
 ```
 coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
 ```
-| genome_name    | jTAD80      | Trimmed_Mean80 |
+| genome_name    | jTAD80 (bwa-mem2)     | Trimmed_Mean80 (coverm genome) |
 |----------------|-------------|----------------|
 | MaxBin.001     | 237.6306129 | 237.69215      |
 | MaxBin.012     | 102.6480596 | 102.73         |
