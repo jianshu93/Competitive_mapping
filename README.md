@@ -41,12 +41,45 @@ chmod a+x ./*.bash
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
 ./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8
 ```
-
+# Output and related
 1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy) (bwa-mem and bowtie2 is supported, see an example below). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
-![alt text](https://user-images.githubusercontent.com/38149286/118576078-d2b34800-b755-11eb-85c2-fdbea1f6fd62.png)
-
 2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
 3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
+
+# Comparison between different tools
+bwa/bwa-mem2 mapping, MAG001, recruitment plot
+![alt text](https://user-images.githubusercontent.com/38149286/118922156-83147e00-b907-11eb-8208-e6e3d24b679f.png)
+
+bowtie2 mapping, MAG001, recruitment plot
+![alt text](https://user-images.githubusercontent.com/38149286/118922190-93c4f400-b907-11eb-8f3c-abf09b2b636e.png)
+
+minimap2 mapping, MAG001, recruitment plot
+![alt text](https://user-images.githubusercontent.com/38149286/118922207-9e7f8900-b907-11eb-9960-b599cb9f004e.png)
+
+
+# Comparison between mapping methods. jTAD is calulated after coverm filter
+bwa/bwa-mem2
+| genome_name    | jTAD80      |
+|----------------|-------------|
+| lab5_MAG.001    | 11.983417312703843      |
+| lab5_MAG.002    | 5.808299064413597      |
+
+
+bowtie
+| genome_name    | jTAD80      |
+|----------------|-------------|
+| lab5_MAG.001    | 11.948344025447575      |
+| lab5_MAG.002    | 5.692994774363855      |
+
+
+minimap2
+| genome_name    | jTAD80      |
+|----------------|-------------|
+| lab5_MAG.001    | 11.981560901976831      |
+| lab5_MAG.002    | 5.802688239625047      |
+
+
+# variant calling for each MAG mapped after filtering (filtered MAGs in the output directory)
 ```
 freebayes -f ./bam_out/lab5_MAG.001.fasta ./bam_out/lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
 ```

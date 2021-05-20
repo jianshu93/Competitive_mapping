@@ -131,10 +131,10 @@ elif [[ "$mapping" == "bwa-mem" ]]; then
 elif [[ "$mapping" == "minimap2" ]]; then
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(./dependencies/minimap2_linux -ax sr --MD -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
+        $(./dependencies/minimap2_linux -ax sr --MD --eqx -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $reads1 $reads2)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(./dependencies/minimap2_linux -ax sr --MD -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
+        $(./dependencies/minimap2_linux -ax sr --MD --eqx -t $threads -o ${output}/all_mags_rename.sam ${output}/all_mags_rename.fasta $intleav)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 elif [[ "$mapping" == "bwa-mem2" ]]; then
