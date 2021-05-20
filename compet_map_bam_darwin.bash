@@ -97,6 +97,8 @@ for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
     $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.fasta)
+    $(./dependencies/seqtk_darwin seq -C ${output}/${SAMPLE}.all.fasta > ${output}/${SAMPLE}.fasta)
+    $(rm ${output}/${SAMPLE}.all.fasta)
     $(ggrep -E '^>' ${output}/${SAMPLE}.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
     $(cat ${output}/${SAMPLE}.fasta >> ${output}/all_mags_rename.fasta)
     ## $(rm ${output}/${SAMPLE}.renamed.fasta)
