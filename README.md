@@ -153,3 +153,7 @@ Subramaniyan, Arun et al. 2020. “Accelerating Maximal-Exact-Match Seeding with
 
 Li, Heng. 2018. “Minimap2: Pairwise Alignment for Nucleotide Sequences.” Bioinformatics 1–7.
 
+Ben Langmead, Christopher Wilks, and Rone Charles. 2019. “Scaling Read Aligners to Hundreds of Threads on General-Purpose Processors.” Bioinformatics 1–12.
+
+Brian Bushnell, 2018, https://github.com/BioInfoTools/BBMap
+
