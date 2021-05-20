@@ -106,10 +106,10 @@ if [[ "$mapping" == "bowtie2" ]]; then
     echo "Indexing done"
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bowtie2 -x ${output}/all_mags_rename -f -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
+        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive-local -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bowtie2 -x ${output}/all_mags_rename -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
+        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive-local --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
 elif [[ "$mapping" == "bwa-mem" ]]; then
     echo "Indexing reference genomes using bwa index"

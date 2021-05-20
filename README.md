@@ -51,7 +51,7 @@ bwa/bwa-mem2 mapping, MAG001, recruitment plot
 ![alt text](https://user-images.githubusercontent.com/38149286/118922156-83147e00-b907-11eb-8208-e6e3d24b679f.png)
 
 bowtie2 mapping, MAG001, recruitment plot
-![alt text](https://user-images.githubusercontent.com/38149286/118922190-93c4f400-b907-11eb-8f3c-abf09b2b636e.png)
+![alt text](https://user-images.githubusercontent.com/38149286/118925232-5ca51180-b90c-11eb-8bf6-9785c18b9624.png)
 
 minimap2 mapping, MAG001, recruitment plot
 ![alt text](https://user-images.githubusercontent.com/38149286/118922207-9e7f8900-b907-11eb-9960-b599cb9f004e.png)
