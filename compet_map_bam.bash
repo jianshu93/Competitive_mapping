@@ -95,9 +95,11 @@ else
     $(mkdir $output)
 fi
 
-
-
-
+if ! command -v samtools &> /dev/null
+then
+    echo "samtools could not be found, please installed via conda or from source"
+    exit
+fi
 
 echo "Rename MAG headers and do reads mapping"
 dfiles="${dir_mag}/*.fasta"
@@ -167,7 +169,7 @@ elif [[ "$mapping" == "bwa-mem2" ]]; then
 elif [[ "$mapping" == "bbmap" ]]; then
     if ! command -v bbmap.sh &> /dev/null
     then
-        echo "bbmap.sh could not be found"
+        echo "bbmap.sh could not be found, please installed it (you can installed via conda)"
         exit
     else
         echo "bbmap.sh is installed"
@@ -184,18 +186,18 @@ else
     echo "not supported mapping method"
 fi
 echo "reads mapping done"
-$(./dependencies/samtools_linux view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
+$(samtools view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
 #$(rm ${output}/all_mags_rename.sam)
-$(./dependencies/samtools_linux sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
+$(samtools sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.bam)
 echo "extracting bam files for each genome"
 dfiles_rename="${output}/*_rename.txt"
-$(./dependencies/samtools_linux index ${output}/all_mags_rename_sorted.bam)
+$(samtools index ${output}/all_mags_rename_sorted.bam)
 for F in $dfiles_rename; do
     BASE=${F##*/}
 	SAMPLE=${BASE%_*}
-    $(./dependencies/samtools_linux view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
-    #$(rm $F)
+    $(samtools view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+    $(rm $F)
 done
 #$(ls $dfiles_rename | parallel -j $processors "./dependencies/samtools_linux view -bS ${output}/all_mags_rename_sorted.bam $(cat {}) > ${output}/{_}.sorted.bam")
 echo "All done"

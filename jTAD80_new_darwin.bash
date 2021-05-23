@@ -51,6 +51,14 @@ done
 echo "using identity $identity for filtering"
 echo "using coverage $coverage for filtering"
 echo "using directory $map_out"
+
+if ! command -v bedtools &> /dev/null
+then
+    echo "bedtools could not be found, please installed via conda or from source"
+    exit
+fi
+
+
 dfiles="${map_out}/*.fasta"
 
 if ! command -v bedtools &> /dev/null

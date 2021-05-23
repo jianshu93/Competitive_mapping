@@ -91,6 +91,12 @@ else
     $(mkdir $output)
 fi
 
+if ! command -v samtools &> /dev/null
+then
+    echo "samtools could not be found, please installed via conda or from source"
+    exit
+fi
+
 echo "Rename MAG headers and do reads mapping"
 dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
@@ -159,7 +165,7 @@ elif [[ "$mapping" == "bwa-mem2" ]]; then
 elif [[ "$mapping" == "bbmap" ]]; then
     if ! command -v bbmap.sh &> /dev/null
     then
-        echo "bbmap.sh could not be found"
+        echo "bbmap.sh could not be found, please installed via conda"
         exit
     else
         echo "bbmap.sh is installed"
