@@ -13,11 +13,8 @@ gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ### 1.competetive reads mapping
 ./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bwa-mem
 
-### 2.calculation of justified TAD80 using filterBam
-./jTAD80.bash -d ./bam_out -o output.txt -p 24 -c 75 -i 95 -j 0.8
-
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
-./jTAD80_new.bash -d ./bam_out1 -o output.txt -p 24 -c 0.70 -i 0.85 -j 0.8
+./jTAD80_new.bash -d ./bam_out -o output.txt -p 24 -c 0.75 -i 0.95 -j 0.8
 ```
 # MacOS (Tested on MacOS Mojave and Big Sur, x86)
 All dependencies can be installed cond except filterBam (provided in dependencies). You may need to install gnu-coreutils, gawk, ggrep, gsed et.al. first via brew:
@@ -35,9 +32,6 @@ chmod a+x ./*.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ### 1.competetive reads mapping
 ./compet_map_bam_darwin.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bwa-mem
-
-### 2.calculation of justified TAD80 using filterBam
-./jTAD80_darwin.bash -d ./bam_out -o output.txt -p 4 -c 75 -i 95 -j 0.8
 
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
 ./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8
