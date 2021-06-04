@@ -15,12 +15,12 @@ output=./output
 intleav=./interleave.fastq.gz
 mapping="bwa-mem"
 
-while getopts ":d:o:(r1):(r2):i:m:T:h" option
+while getopts ":d:o:f:r:i:m:T:h" option
 do
 	case $option in
 		d) dir_mag=$OPTARG;;
-        r1) reads1=$OPTARG;;
-        r2) reads2=$OPTARG;;
+        f) reads1=$OPTARG;;
+        r) reads2=$OPTARG;;
         i) intleav=$OPTARG;;
         o) output=$OPTARG;;
         T) threads=$OPTARG;;
@@ -32,7 +32,7 @@ do
 		    exit 1
 			;;
 		h) 
-           echo "usage: compet_map_bam.bash -d ./MAGs -r1 ./reads_R1.fastq -r2 ./reads_R2.fastq -T 12 -o ./bam_out
+           echo "usage: compet_map_bam.bash -d ./MAGs -f ./reads_R1.fastq -r ./reads_R2.fastq -T 12 -o ./bam_out
                 or 
                 usage: compet_map_bam.bash -d ./MAGs -i interleaved.fastq -T 12 -o ./bam_out
            

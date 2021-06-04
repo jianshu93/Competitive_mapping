@@ -14,12 +14,12 @@ output=./output
 intleav=./interleave.fastq
 mapping="bwa-mem"
 
-while getopts ":d:o:(r1):(r2):i:m:T:h" option
+while getopts ":d:o:r:f:i:m:T:h" option
 do
 	case $option in
 		d) dir_mag=$OPTARG;;
-        r1) reads1=$OPTARG;;
-        r2) reads2=$OPTARG;;
+        r) reads1=$OPTARG;;
+        f) reads2=$OPTARG;;
         i) intleav=$OPTARG;;
         o) output=$OPTARG;;
         T) threads=$OPTARG;;
@@ -102,7 +102,7 @@ dfiles="${dir_mag}/*.fasta"
 for F in $dfiles; do
 	BASE=${F##*/}
 	SAMPLE=${BASE%.*}
-    $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.fasta)
+    $(./dependencies/seqtk_darwin rename $F ${SAMPLE}. > ${output}/${SAMPLE}.all.fasta)
     $(./dependencies/seqtk_darwin seq -C ${output}/${SAMPLE}.all.fasta > ${output}/${SAMPLE}.fasta)
     $(rm ${output}/${SAMPLE}.all.fasta)
     $(ggrep -E '^>' ${output}/${SAMPLE}.fasta | gsed 's/>//' | gawk '{print $1}' | gtr '\n' ' ' > ${output}/${SAMPLE}_rename.txt)
