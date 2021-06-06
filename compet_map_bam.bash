@@ -12,8 +12,7 @@ dir_mag=./MAG
 reads1=./reads_R1.fastq.gz
 reads2=./reads_R2.fastq.gz
 output=./output
-intleav=./interleave.fastq.gz
-mapping="bwa-mem"
+mapping="bwa-mem2"
 
 while getopts ":d:o:f:r:i:m:T:h" option
 do
@@ -97,7 +96,7 @@ fi
 
 if ! command -v samtools &> /dev/null
 then
-    echo "samtools could not be found, please installed via conda or from source"
+    echo "samtools could not be found, please install it via conda or from source"
     exit
 fi
 

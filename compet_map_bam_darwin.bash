@@ -11,15 +11,14 @@ dir_mag=./MAG
 reads1=./reads_R1.fastq
 reads2=./reads_R2.fastq
 output=./output
-intleav=./interleave.fastq
-mapping="bwa-mem"
+mapping="bwa-mem2"
 
-while getopts ":d:o:r:f:i:m:T:h" option
+while getopts ":d:o:f:r:i:m:T:h" option
 do
 	case $option in
 		d) dir_mag=$OPTARG;;
-        r) reads1=$OPTARG;;
-        f) reads2=$OPTARG;;
+        f) reads1=$OPTARG;;
+        r) reads2=$OPTARG;;
         i) intleav=$OPTARG;;
         o) output=$OPTARG;;
         T) threads=$OPTARG;;
