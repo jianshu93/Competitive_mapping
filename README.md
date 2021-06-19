@@ -1,6 +1,6 @@
 # Competitive_mapping & Coverage depth calculation (TAD80)
 
-This is a wrapper for competitive reads mapping (see instrain website for what is competative mapping here: https://instrain.readthedocs.io/en/master/important_concepts.html) against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity. Several reads mapping softwares are supported, including bowtie2, bwa-mem, bwa-mem2 (https://ieeexplore.ieee.org/abstract/document/8820962?casa_token=KrlJpG5fVt8AAAAA:NUlxBO2400z4M-sFMCbDn2tSXTZj_y0si_MQgNbDvPd3y223cpV-si6b8DDWCWhl-1iSI3Gh), minimap2. bwa-mem2 is 2x speedup comparing to bwa-mem with exactly the same output. Thanks to bioinformatics team at Georgia Tech (https://www.cc.gatech.edu/~saluru/)!
+This is a wrapper for competitive reads mapping (see instrain website for what is competative mapping here: https://instrain.readthedocs.io/en/master/important_concepts.html) against a collection of genomes or metagenomic assembled genomes (MAGs). And then calculate justified TAD80 values based on previous method (Rodriguez-R et.al.,2020). Bam files will be filtered first according to reads coverage and identity using CoverM. Several reads mapping softwares are supported, including bowtie2 (reads must be fasta format, gzipped or not), bwa-mem, bwa-mem2 (https://ieeexplore.ieee.org/abstract/document/8820962?casa_token=KrlJpG5fVt8AAAAA:NUlxBO2400z4M-sFMCbDn2tSXTZj_y0si_MQgNbDvPd3y223cpV-si6b8DDWCWhl-1iSI3Gh), minimap2 and bbmap. By default bbmap is used because it is faster comparing to other softwares without sacrificing accuracy (down to 70% identity, bloom filter is used to accelerate kmer matching to filter reads, this is faster). Bowtie2 --very-sensitive can also map reads down to 70% identity but parallel is not well implemented (core dumped for more than 1 thread). bwa-mem2 is 2x speedup comparing to bwa-mem with exactly the same output. Thanks to bioinformatics team at Georgia Tech (https://www.cc.gatech.edu/~saluru/)! Other mapping tools such as minimap2 only map reads down to identity 85%.
 
 # Linux (tested on Ubuntu 18.0.4, CenOS and RHEL 7)
 ```
@@ -11,7 +11,7 @@ chmod a+x ./*.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 
 ### 1.competetive reads mapping
-./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bwa-mem
+./compet_map_bam.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bbmap
 
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
 ./jTAD80_new.bash -d ./bam_out -o output.txt -p 24 -c 0.75 -i 0.95 -j 0.8
@@ -31,7 +31,7 @@ chmod a+x dependencies/*
 chmod a+x ./*.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ### 1.competetive reads mapping
-./compet_map_bam_darwin.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bwa-mem
+./compet_map_bam_darwin.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bbmap
 
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
 ./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8

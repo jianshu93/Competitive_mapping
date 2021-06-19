@@ -12,7 +12,7 @@ dir_mag=./MAG
 reads1=./reads_R1.fastq.gz
 reads2=./reads_R2.fastq.gz
 output=./output
-mapping="bwa-mem2"
+mapping="bbmap"
 
 while getopts ":d:o:f:r:i:m:T:h" option
 do
@@ -60,25 +60,25 @@ fi
 
 if test -f "$intleav"; then
     echo "$intleav exists."
-    if (file $intleav | grep -q "gzip compressed") ; then
-        $(gunzip $intleav)
-    fi
+    ###if (file $intleav | grep -q "gzip compressed") ; then
+        ###$(gunzip $intleav)
+    ###fi
 else
 	echo "$intleav does not exists."
     if test -f "$reads1"; then
         echo "$reads1 exists."
-        if (file $reads1 | grep -q "gzip compressed") ; then
-            $(gunzip $reads1)
-        fi
+        ###if (file $reads1 | grep -q "gzip compressed") ; then
+            ###$(gunzip $reads1)
+        ###fi
     else
 	    echo "$reads1 does not exists."
 	    exit 1
     fi
     if test -f "$reads2"; then
         echo "$reads2 exists."
-        if (file $reads2 | grep -q "gzip compressed") ; then
-            $(gunzip $reads2)
-        fi
+        ###if (file $reads2 | grep -q "gzip compressed") ; then
+            ###$(gunzip $reads2)
+        ###fi
     else
 	    echo "$reads2 does not exists."
 	    exit 1
@@ -126,10 +126,12 @@ if [[ "$mapping" == "bowtie2" ]]; then
     echo "Indexing done"
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bowtie2 -x ${output}/all_mags_rename --very-sensitive-local -f -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
+
+        $(bowtie2 -x ${output}/all_mags_rename --very-sensitive -f -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bowtie2 -x ${output}/all_mags_rename --very-sensitive-local -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
+
+        $(bowtie2 -x ${output}/all_mags_rename --very-sensitive -f --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 elif [[ "$mapping" == "bwa-mem" ]]; then
@@ -175,10 +177,10 @@ elif [[ "$mapping" == "bbmap" ]]; then
     fi
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bbmap.sh ref=${output}/all_mags_rename.fasta in1=$reads1 in2=$reads2 slow=t sam=1.4 threads=$threads mdtag=t out=${output}/all_mags_rename.sam nodisk)
+        $(bbmap.sh ref=${output}/all_mags_rename.fasta in1=$reads1 in2=$reads2 slow=t sam=1.4 threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam nodisk)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bbmap.sh ref=${output}/all_mags_rename.fasta in=$intleav interleaved=true sam=1.4 slow=t threads=$threads mdtag=t out=${output}/all_mags_rename.sam nodisk)
+        $(bbmap.sh ref=${output}/all_mags_rename.fasta in=$intleav interleaved=true sam=1.4 slow=t threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam nodisk)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else
@@ -186,7 +188,7 @@ else
 fi
 echo "reads mapping done"
 $(samtools view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
-#$(rm ${output}/all_mags_rename.sam)
+$(rm ${output}/all_mags_rename.sam)
 $(samtools sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.bam)
 echo "extracting bam files for each genome"

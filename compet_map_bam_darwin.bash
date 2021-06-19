@@ -56,25 +56,25 @@ fi
 
 if test -f "$intleav"; then
     echo "$intleav exists."
-    if (file $intleav | grep -q "gzip compressed") ; then
-        $(gunzip $intleav)
-    fi
+    ###if (file $intleav | grep -q "gzip compressed") ; then
+        ###$(gunzip $intleav)
+    ###fi
 else
 	echo "$intleav does not exists."
     if test -f "$reads1"; then
         echo "$reads1 exists."
-        if (file $reads1 | grep -q "gzip compressed") ; then
-            $(gunzip $reads1)
-        fi
+        ###if (file $reads1 | grep -q "gzip compressed") ; then
+            ###$(gunzip $reads1)
+        ###fi
     else
 	    echo "$reads1 does not exists."
 	    exit 1
     fi
     if test -f "$reads2"; then
         echo "$reads2 exists."
-        if (file $reads2 | grep -q "gzip compressed") ; then
-            $(gunzip $reads2)
-        fi
+        ###if (file $reads2 | grep -q "gzip compressed") ; then
+            ###$(gunzip $reads2)
+        ###fi
     else
 	    echo "$reads2 does not exists."
 	    exit 1
@@ -122,10 +122,10 @@ if [[ "$mapping" == "bowtie2" ]]; then
     echo "Indexing done"
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive-local -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
+        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive -1 $reads1 -2 $reads2 -S ${output}/all_mags_rename.sam --threads $threads)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive-local --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
+        $(bowtie2 -x ${output}/all_mags_rename -f --very-sensitive --interleaved $intleav -S ${output}/all_mags_rename.sam --threads $threads)
     fi
 elif [[ "$mapping" == "bwa-mem" ]]; then
     echo "Indexing reference genomes using bwa index"
@@ -171,10 +171,10 @@ elif [[ "$mapping" == "bbmap" ]]; then
     fi
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else
