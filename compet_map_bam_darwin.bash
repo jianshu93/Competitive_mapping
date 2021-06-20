@@ -171,10 +171,10 @@ elif [[ "$mapping" == "bbmap" ]]; then
     fi
     if [ -z "$intleav" ]; then
         echo "Doing reads mapping using forward and reverse reads"
-        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+        $(bbmap.sh in1=$reads1 in2=$reads2 threads=$threads mdtag=t nhtag=t amtag=t cigar=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     else
         echo "Doing reads mapping using interleaved reads"
-        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t nhtag=t amtag=t cigar=t bloom=t bloomk=11 out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
+        $(bbmap.sh in=$intleav interleaved=true threads=$threads mdtag=t nhtag=t amtag=t cigar=t out=${output}/all_mags_rename.sam ref=${output}/all_mags_rename.fasta nodisk)
     fi
     $(rm ${output}/all_mags_rename.fasta)
 else
