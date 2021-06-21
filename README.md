@@ -17,13 +17,13 @@ gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ./jTAD80_new.bash -d ./bam_out -o output.txt -p 24 -c 0.75 -i 0.95 -j 0.8
 ```
 # MacOS (Tested on MacOS Mojave and Big Sur, x86)
-All dependencies can be installed cond except filterBam (provided in dependencies). You may need to install gnu-coreutils, gawk, ggrep, gsed et.al. first via brew:
+All dependencies can be installed using conda except filterBam (provided in dependencies). You may need to install gnu-coreutils, gawk, ggrep, gsed et.al. first via brew:
 ```
 brew install coreutils
 brew install gawk
-brew install ggrep
+brew install grep
 brew install gsed
-brew install bwa-mem2
+brew install brewsci/bio/bwa-mem2
 
 git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
@@ -31,7 +31,7 @@ chmod a+x dependencies/*
 chmod a+x ./*.bash
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 ### 1.competetive reads mapping
-./compet_map_bam_darwin.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 24 -o ./bam_out -m bbmap
+./compet_map_bam_darwin.bash -d ./demo_input/MAG -i ./demo_input/T4AerOil_sbsmpl5.fa -T 8 -o ./bam_out -m bbmap
 
 ### 3.calculation of justified TAD80 using coverm filter (for filtering only)
 ./jTAD80_new_darwin.bash -d ./bam_out -o output.txt -p 4 -c 0.75 -i 0.95 -j 0.8
@@ -39,7 +39,7 @@ gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 # Output and related
 1. In output directory you will have sorted bam files for each genome and also a big sorted bam file for all genomes. Those bam files for each genome can be used for recuitment plot (https://github.com/KGerhardt/RecruitPlotEasy) (bwa-mem and bowtie2 is supported, see an example below). The big bam file can be used for calculation of coverage depth et.al. using CoverM (https://github.com/wwood/CoverM)
 2. Justified TAD80 is based on BedGraph.tad.rb in enveomics (https://github.com/lmrodriguezr/enveomics) but mapped reads are filtered using filterBam before calculating.
-3. The filtered bam files in step 2 can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. For example:
+3. The filtered bam files in step 2 in the output directory can be directly used for variant calling. Softwares such as freebayes (https://github.com/freebayes/freebayes) and GATK (https://github.com/broadinstitute/gatk) can be used. See below.
 
 # Comparison between different tools
 bwa/bwa-mem2 mapping, MAG001, recruitment plot
@@ -88,6 +88,8 @@ bbmap
 ```
 freebayes -f ./bam_out/lab5_MAG.001.fasta ./bam_out/lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
 ```
+Then population genomic analysis such as dN/dS ratio and genomic diversity pi can be calculated using popGNOM.
+
 # Comparison with existing tools: coverm v0.6.0 using real dataset
 
 Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech.
