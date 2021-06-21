@@ -33,7 +33,7 @@ do
 		h) 
            echo "usage: compet_map_bam.bash -d ./MAGs -f ./reads_R1.fastq -r ./reads_R2.fastq -T 12 -o ./bam_out
                 or 
-                usage: compet_map_bam.bash -d ./MAGs -i interleaved.fastq -T 12 -o ./bam_out
+                usage: compet_map_bam.bash -d ./MAGs -i interleaved.fastq.gz -T 12 -o ./bam_out
            
                 options:
                 -d directory contains MAG in fasta format, must ends with .fasta in the name
@@ -42,7 +42,7 @@ do
                 -i interleaved reads to map to the MAG collection, can be gzipped format
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
-                -m mapping method, default bwa-mem, bowtie2/minimap2/bbmap is also supported but there
+                -m mapping method, default bbmap, bowtie2/minimap2/bwa is also supported but there
                     are known bug for bowtie2 if using --threads value larger than 1. Bowtie2 and bbmap
                     should be installed via conda before using.
                 "

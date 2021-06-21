@@ -88,13 +88,20 @@ bbmap
 ```
 freebayes -f ./bam_out/lab5_MAG.001.fasta ./bam_out/lab5_MAG.001.filtered.sorted.bam > lab5_MAG.001.vcf
 ```
-Then population genomic analysis such as dN/dS ratio and genomic diversity pi can be calculated using popGNOM.
+Then population genomic analysis such as dN/dS ratio and genomic diversity pi can be calculated using POGENOM (https://github.com/EnvGen/POGENOM)
 
-# Comparison with existing tools: coverm v0.6.0 using real dataset
+# Comparison with existing tools: coverm v0.6.1 using real dataset
 
-Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech.
+Sample data from Karthikeyan et.al.,2021, Env.Sci.Tech. After running the mapping script you will have a bam_out directory.
 ```
-coverm genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
+### for Linux
+cd Competitive_mapping
+./dependencies/coverm_linux genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
+
+### for MacOS
+cd Competitive_mapping
+./dependencies/coverm_darwin genome -d ./bam_out/ -x fasta -b ./bam_out/all_mags_rename_sorted.bam -m trimmed_mean --trim-min 0.1 --trim-max 0.9 --min-read-percent-identity 0.95 --min-read-aligned-percent 0.75
+
 ```
 | genome_name    | jTAD80 (bwa-mem2)     | Trimmed_Mean80 (coverm genome, bwa-mem2) | jTAD80 (bbmap)     | jTAD80 (bowtie2)     | jTAD80 (minimap2)
 |----------------|-------------|----------------|----------------|----------------|----------------|
