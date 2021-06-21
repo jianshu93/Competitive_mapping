@@ -182,9 +182,9 @@ else
 fi
 echo "reads mapping done"
 
-$(./dependencies/samtools_darwin view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
+$(samtools view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.sam)
-$(./dependencies/samtools_darwin sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
+$(samtools sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.bam)
 
 echo "extracting bam files for each genome"
@@ -192,8 +192,8 @@ dfiles_rename="${output}/*_rename.txt"
 for F in $dfiles_rename; do
     BASE=${F##*/}
 	SAMPLE=${BASE%_*}
-    $(./dependencies/samtools_darwin index ${output}/all_mags_rename_sorted.bam)
-    $(./dependencies/samtools_darwin view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
+    $(samtools index ${output}/all_mags_rename_sorted.bam)
+    $(samtools view -@ $threads -bS ${output}/all_mags_rename_sorted.bam $(cat $F) > ${output}/${SAMPLE}.sorted.bam)
     $(rm $F)
 done
 echo "All done"
