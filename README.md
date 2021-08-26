@@ -8,6 +8,8 @@ git clone https://github.com/jianshu93/Competitive_mapping
 cd Competitive_mapping
 chmod a+x dependencies/*
 chmod a+x ./*.bash
+wget http://rothlab.com/Data/T4AerOil_sbsmpl5.fa.gz
+mv T4AerOil_sbsmpl5.fa.gz ./demo_input
 gunzip ./demo_input/T4AerOil_sbsmpl5.fa.gz
 
 ### 1.competetive reads mapping
