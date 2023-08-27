@@ -42,8 +42,7 @@ do
                 -i interleaved reads to map to the MAG collection, can be gzipped format
                 -o output directory to store each bam file for each MAG
                 -T number of threas to use for mapping and also format tranformation
-                -m mapping method, default bbmap, bowtie2/minimap2/bwa is also supported but there
-                    are known bug for bowtie2 if using --threads value larger than 1. Bowtie2 and bbmap
+                -m mapping method, default bbmap, bowtie2/minimap2/bwa is also supported. Bowtie2 and bbmap
                     should be installed via conda before using.
                 "
             exit 1
