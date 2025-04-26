@@ -1,5 +1,5 @@
 #!/bin/bash
-### Jianshu Zhao (jianshu.zhao@gatech.edu)
+### Jianshu Zhao (jiz322@ucsd.edu)
 ### competitive mapping and extracing of MAG bam file for recruitment plot and TAD80 calculation.
 ### dependencies:
 ### seqtk, samtools and bowtie2/bwa/bwa-mem2/minimap2/bbmap，all can be installed via conda
@@ -12,7 +12,7 @@ dir_mag=./MAG
 reads1=./reads_R1.fastq.gz
 reads2=./reads_R2.fastq.gz
 output=./output
-mapping="bbmap"
+mapping="bwa-mem2"
 
 while getopts ":d:o:f:r:i:m:T:h" option
 do
@@ -190,7 +190,7 @@ $(samtools view -bS -@ $threads ${output}/all_mags_rename.sam > ${output}/all_ma
 $(rm ${output}/all_mags_rename.sam)
 $(samtools sort -@ $threads -O bam -o ${output}/all_mags_rename_sorted.bam ${output}/all_mags_rename.bam)
 $(rm ${output}/all_mags_rename.bam)
-echo "extracting bam files for each genome"
+echo "extracting bam files for each genome from the sorted bam file"
 dfiles_rename="${output}/*_rename.txt"
 $(samtools index ${output}/all_mags_rename_sorted.bam)
 for F in $dfiles_rename; do

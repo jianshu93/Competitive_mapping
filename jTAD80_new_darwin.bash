@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Jianshu Zhao (jianshu.zhao@gatech.edu)
+### Jianshu Zhao (jiz322@ucsd.edu)
 ### justfied TAD80 (Truncated average depth 80%) for coverage depth of MAGs based on competitive mapping
 ### The original publication is here: https://sfamjournals.onlinelibrary.wiley.com/doi/abs/10.1111/1462-2920.15112
 ### this is an improvement of the original publication because original method
